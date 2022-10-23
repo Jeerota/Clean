@@ -1,0 +1,101 @@
+﻿@page "/fetchdata"
+
+<PageTitle>Example Data</PageTitle>
+
+@using Clean.Infrastructure.SQL;
+@using Clean.Infrastructure.ExampleDb;
+@inject IRepository<ExampleDbContext, Example> _examples
+@inject IRepository<ExampleDbContext, Sample> _samples
+
+<h1>Examples</h1>
+
+@if (exampleDbs == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var exampleDb in exampleDbs)
+            {
+                <tr>
+                    <td><input type="datetime" @onchange="(a) => CreatedDateChange(a, exampleDb)" value="@exampleDb.CreatedDate" /></td>
+                    <td><input @onchange="(a) => NameChange(a, exampleDb)" value="@exampleDb.Name" /></td>
+                    <td><button @onclick="() => Delete(exampleDb)">Delete</button></td>
+                </tr>
+                @foreach (var sampleDb in exampleDb.Samples)
+                {
+                    <tr>
+                        <td>@exampleDb.CreatedDate</td>
+                        <td><input @onchange="(a) => NameChange(a, sampleDb)" value="@sampleDb.Name" /></td>
+                        <td><button @onclick="() => Delete(sampleDb)">Delete</button></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<Example>? exampleDbs;
+
+    void CreatedDateChange(ChangeEventArgs arguments, Example example)
+    {
+        if(arguments.Value != null
+            && DateTime.TryParse((string)arguments.Value, out DateTime newDate)
+            && newDate != example.CreatedDate)
+        {
+            example.CreatedDate = newDate;
+            _examples.Update(example);
+        }
+    }
+
+    void NameChange(ChangeEventArgs arguments, Example example)
+    {
+        if ((string?)arguments.Value != example.Name)
+        {
+            example.Name = (string?)arguments.Value;
+            _examples.Update(example);
+        }
+    }
+
+    void NameChange(ChangeEventArgs arguments, Sample sample)
+    {
+        if ((string?)arguments.Value != sample.Name)
+        {
+            sample.Name = (string?)arguments.Value;
+            _samples.Update(sample);
+        }
+    }
+
+    void Delete(Example example)
+    {
+        _examples.Delete(example);
+    }
+
+    void Delete(Sample sample)
+    {
+        _samples.Delete(sample);
+    }
+
+    protected override void OnInitialized()
+    {
+        exampleDbs = _examples.GetAll(x => x.OrderByDescending(_ => _.CreatedDate).ThenBy(_ => _.Name), x => x.Samples);
+
+        if (!exampleDbs.Any()) 
+        {
+            Example newExample = new Example() { Name = "Example", Samples = new List<Sample>() };
+            newExample.Samples.Add(new() { Name = "Sample 1" });
+            newExample.Samples.Add(new() { Name = "Sample 2" });
+            _examples.Create(newExample);
+        }
+    }
+}

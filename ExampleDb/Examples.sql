@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[Examples]
+(
+	[Id]			BIGINT NOT NULL IDENTITY(1, 1) CONSTRAINT [PK_Examples_Id] PRIMARY KEY,
+	[Name]			VARCHAR(100) NULL,
+	[CreatedDate]	DATETIME2(7) NOT NULL CONSTRAINT [DF_Examples_CreatedDate] DEFAULT(GETDATE()),
+	[ModifiedDate]	DATETIME2(7) NULL
+)
