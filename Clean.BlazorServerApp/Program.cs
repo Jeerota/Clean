@@ -1,9 +1,9 @@
 using Clean.Infrastructure.SQL;
-using Clean.Infrastructure.ExampleDb;
+using Clean.Domain.ExampleContext;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.SQLInfrastructure();
-builder.Services.ExampleServices();
+builder.Services.ExampleDomain();
 
 // Add services to the container.
 builder.Services.AddRazorPages();

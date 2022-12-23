@@ -2,10 +2,8 @@
 
 <PageTitle>Example Data</PageTitle>
 
-@using Clean.Infrastructure.SQL;
-@using Clean.Infrastructure.ExampleDb;
-@inject IRepository<ExampleDbContext, Example> _examples
-@inject IRepository<ExampleDbContext, Sample> _samples
+@inject IExampleService _exampleService;
+@inject ISampleService _sampleService;
 
 <h1>Examples</h1>
 
@@ -31,13 +29,16 @@ else
                     <td><input @onchange="(a) => NameChange(a, exampleDb)" value="@exampleDb.Name" /></td>
                     <td><button @onclick="() => Delete(exampleDb)">Delete</button></td>
                 </tr>
-                @foreach (var sampleDb in exampleDb.Samples)
+                @if (exampleDb.Samples != null)
                 {
-                    <tr>
-                        <td>@exampleDb.CreatedDate</td>
-                        <td><input @onchange="(a) => NameChange(a, sampleDb)" value="@sampleDb.Name" /></td>
-                        <td><button @onclick="() => Delete(sampleDb)">Delete</button></td>
-                    </tr>
+                    @foreach (var sampleDb in exampleDb.Samples)
+                    {
+                        <tr>
+                            <td>@exampleDb.CreatedDate</td>
+                            <td><input @onchange="(a) => NameChange(a, sampleDb)" value="@sampleDb.Name" /></td>
+                            <td><button @onclick="() => Delete(sampleDb)">Delete</button></td>
+                        </tr>
+                    }        
                 }
             }
         </tbody>
@@ -47,6 +48,24 @@ else
 @code {
     private IEnumerable<Example>? exampleDbs;
 
+    protected override void OnInitialized()
+    {
+        ExampleLookupRequest exampleLookupRequest = new()
+            {
+                CreatedDate = DateTime.Today
+            };
+
+        exampleDbs = _exampleService.Get(exampleLookupRequest);
+
+        if (!exampleDbs.Any())
+        {
+            Example newExample = new Example() { Name = "Example", Samples = new List<Sample>() };
+            newExample.Samples.Add(new() { Name = "Sample 1" });
+            newExample.Samples.Add(new() { Name = "Sample 2" });
+            _exampleService.Create(newExample);
+        }
+    }
+
     void CreatedDateChange(ChangeEventArgs arguments, Example example)
     {
         if(arguments.Value != null
@@ -54,7 +73,7 @@ else
             && newDate != example.CreatedDate)
         {
             example.CreatedDate = newDate;
-            _examples.Update(example);
+            _exampleService.Update(example);
         }
     }
 
@@ -63,7 +82,7 @@ else
         if ((string?)arguments.Value != example.Name)
         {
             example.Name = (string?)arguments.Value;
-            _examples.Update(example);
+            _exampleService.Update(example);
         }
     }
 
@@ -72,30 +91,17 @@ else
         if ((string?)arguments.Value != sample.Name)
         {
             sample.Name = (string?)arguments.Value;
-            _samples.Update(sample);
+            _sampleService.Update(sample);
         }
     }
 
     void Delete(Example example)
     {
-        _examples.Delete(example);
+        _exampleService.Delete(example);
     }
 
     void Delete(Sample sample)
     {
-        _samples.Delete(sample);
-    }
-
-    protected override void OnInitialized()
-    {
-        exampleDbs = _examples.GetAll(x => x.OrderByDescending(_ => _.CreatedDate).ThenBy(_ => _.Name), x => x.Samples);
-
-        if (!exampleDbs.Any()) 
-        {
-            Example newExample = new Example() { Name = "Example", Samples = new List<Sample>() };
-            newExample.Samples.Add(new() { Name = "Sample 1" });
-            newExample.Samples.Add(new() { Name = "Sample 2" });
-            _examples.Create(newExample);
-        }
+        _sampleService.Delete(sample);
     }
 }

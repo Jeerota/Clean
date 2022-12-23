@@ -1,4 +1,4 @@
-﻿namespace Clean.Domain
+﻿namespace Clean.Domain.Common
 {
     public abstract class SystemFields
     {

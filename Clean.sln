@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clean.Infrastructure", "Clean.Infrastructure\Clean.Infrastructure.csproj", "{C3DFC78C-9934-4436-BF2A-300A7F751554}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clean.Infrastructure", "Clean.Infrastructure\Clean.Infrastructure.csproj", "{C3DFC78C-9934-4436-BF2A-300A7F751554}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clean.Domain", "Clean.Domain\Clean.Domain.csproj", "{BBD9DF98-3224-465B-845B-E0C02EEF8D74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clean.Domain", "Clean.Domain\Clean.Domain.csproj", "{BBD9DF98-3224-465B-845B-E0C02EEF8D74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clean.Application", "Clean.Application\Clean.Application.csproj", "{5042C2FD-3729-4D08-B6E3-092D8EBECAD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clean.Application", "Clean.Application\Clean.Application.csproj", "{5042C2FD-3729-4D08-B6E3-092D8EBECAD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clean.BlazorServerApp", "Clean.BlazorServerApp\Clean.BlazorServerApp.csproj", "{E0759E1D-C1D5-4865-9A8B-8D004BEE6355}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clean.BlazorServerApp", "Clean.BlazorServerApp\Clean.BlazorServerApp.csproj", "{E0759E1D-C1D5-4865-9A8B-8D004BEE6355}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Clean.ExampleDb", "ExampleDb\Clean.ExampleDb.sqlproj", "{85A36028-BEFF-423B-849A-906526E2388B}"
 EndProject

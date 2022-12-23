@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Clean.Domain.Common;
 
-namespace Clean.Domain.Example
+namespace Clean.Domain.ExampleContext.Entities
 {
     [Table("Examples")]
     public class Example : SystemFields

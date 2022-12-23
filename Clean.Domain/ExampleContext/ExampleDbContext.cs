@@ -1,8 +1,8 @@
-﻿using Clean.Domain.Example;
+﻿using Clean.Domain.ExampleContext.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Clean.Infrastructure.ExampleDb
+namespace Clean.Domain.ExampleContext
 {
     public class ExampleDbContext : DbContext
     {
@@ -30,5 +30,6 @@ namespace Clean.Infrastructure.ExampleDb
         }
 
         public DbSet<Example> Examples { get; set; }
+        public DbSet<Sample> Samples { get; set; }
     }
 }
