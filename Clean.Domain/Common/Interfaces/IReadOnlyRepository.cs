@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 
-namespace Clean.Application.Common
+namespace Clean.Domain.Common.Interfaces
 {
-    public interface IReadOnlyRepository<TContext, TEntity> where TContext : class, new() where TEntity : class
+    public interface IReadOnlyRepository<TEntity> where TEntity : class
     {
         TEntity First(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] include);
         Task<TEntity> FirstAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] include);

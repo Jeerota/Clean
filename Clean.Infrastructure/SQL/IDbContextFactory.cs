@@ -10,13 +10,16 @@ namespace Clean.Infrastructure.SQL
 
     public class DbContextFactory : IDbContextFactory
     {
-        IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public DbContextFactory(IConfiguration configuration)
         {
-            _configuration = configuration;
+            if(configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+            else
+                _configuration = configuration;
         }
 
-        public DbContext GetDbContext<TContext>() where TContext : DbContext, new() => (TContext)Activator.CreateInstance(typeof(TContext), new object[] { _configuration });
+        public DbContext GetDbContext<TContext>() where TContext : DbContext, new() => (TContext?)Activator.CreateInstance(typeof(TContext), new object[] { _configuration }) ?? throw new ArgumentNullException("dbContext");
     }
 }

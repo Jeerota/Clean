@@ -1,6 +1,6 @@
-﻿using Clean.Application.Common.Helpers;
+﻿using Clean.Domain.Common.Model;
 
-namespace Clean.Application.Models.LookupRequests
+namespace Clean.Domain.ExampleContext.Models.LookupRequests
 {
     public class SampleLookupRequest : LookupRequest
     {

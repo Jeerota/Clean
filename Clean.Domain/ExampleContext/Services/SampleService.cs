@@ -1,9 +1,6 @@
-﻿using Clean.Application.Common;
-using Clean.Application.Common.Helpers;
-using Clean.Application.Models.LookupRequests;
+﻿using Clean.Domain.Common.Interfaces;
 using Clean.Domain.ExampleContext.Entities;
-using System.Linq.Expressions;
-using System.Reflection;
+using Clean.Domain.ExampleContext.Models.LookupRequests;
 
 namespace Clean.Domain.ExampleContext.Services
 {
@@ -18,10 +15,10 @@ namespace Clean.Domain.ExampleContext.Services
 
     public class SampleService : ISampleService
     {
-        private readonly IRepository<ExampleDbContext, Sample> _SampleRepository;
+        private readonly IRepository<Sample> _SampleRepository;
 
-        public SampleService(IRepository<ExampleDbContext, Sample> SampleRepository) 
-        { 
+        public SampleService(IRepository<Sample> SampleRepository)
+        {
             _SampleRepository = SampleRepository;
         }
 
@@ -32,7 +29,7 @@ namespace Clean.Domain.ExampleContext.Services
 
         public IEnumerable<Sample> Get(SampleLookupRequest lookupRequest)
         {
-            var predicate = FilterSamplesByLookupRequest(lookupRequest);
+            var predicate = lookupRequest.BuildPreciate<Sample>();
             return _SampleRepository.Where(predicate);
         }
 
@@ -50,24 +47,8 @@ namespace Clean.Domain.ExampleContext.Services
         {
             var entity = _SampleRepository.FirstOrDefault(entity => entity.Id == id);
 
-            if(entity != null)
+            if (entity != null)
                 _SampleRepository.Delete(entity);
-        }
-
-        private Expression<Func<Sample, bool>> FilterSamplesByLookupRequest(SampleLookupRequest lookupRequest)
-        {
-            Expression<Func<Sample, bool>> predicate = PredicateBuilder.True<Sample>();
-            var properties = lookupRequest.GetType().GetProperties();
-
-            foreach (PropertyInfo property in properties)
-            {
-                var lookupPropertyValue = property.GetValue(lookupRequest, null);
-
-                if(lookupPropertyValue != null)
-                    predicate = predicate.And(entity => property.GetValue(entity, null) == lookupPropertyValue);
-            }
-
-            return predicate;
         }
     }
 }

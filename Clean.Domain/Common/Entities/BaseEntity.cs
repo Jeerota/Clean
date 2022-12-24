@@ -1,6 +1,6 @@
-﻿namespace Clean.Domain.Common
+﻿namespace Clean.Domain.Common.Entities
 {
-    public abstract class SystemFields
+    public abstract class BaseEntity
     {
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }

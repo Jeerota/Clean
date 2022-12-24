@@ -1,11 +1,12 @@
-﻿using Clean.Application.Common;
+﻿using Clean.Domain.Common.Interfaces;
+using Clean.Domain.Common.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 
 namespace Clean.Infrastructure.SQL
 {
-    public class SQLRepository<TContext, TEntity> : IRepository<TContext, TEntity> where TContext : DbContext, new() where TEntity : class
+    public class SQLRepository<TContext, TEntity> : IRepository<TEntity> where TContext : DbContext, new() where TEntity : class
     {
         private readonly DbContext _dbContext;
         private readonly DbSet<TEntity> _entity;
@@ -26,128 +27,188 @@ namespace Clean.Infrastructure.SQL
             return await _dbContext.FindAsync<TEntity>(keyValues);
         }
 
-        public void Create(TEntity entity)
+        public ResultResponse Create(TEntity entity)
         {
-            EntityEntry<TEntity> entry = _dbContext.Entry(entity);
-            object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
-                .Select(x => entry.Property(x.Name).CurrentValue)
-                .ToArray();
-
-            if(Find(primaryKey) == null)
+            ResultResponse result = new();
+            try
             {
-                PropertyEntry? createdDate = entry?.Properties.SingleOrDefault(x => x.Metadata.Name == "CreatedDate");
+                EntityEntry<TEntity> entry = _dbContext.Entry(entity);
+                object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
+                    .Select(x => entry.Property(x.Name).CurrentValue)
+                    .ToArray();
 
-                if(createdDate != null)
-                    createdDate.CurrentValue = DateTime.UtcNow;
+                if (Find(primaryKey) == null)
+                {
+                    PropertyEntry? createdDate = entry?.Properties.SingleOrDefault(x => x.Metadata.Name == "CreatedDate");
 
-                _dbContext.Add(entity);
-                _dbContext.SaveChanges();
+                    if (createdDate != null)
+                        createdDate.CurrentValue = DateTime.UtcNow;
+
+                    _dbContext.Add(entity);
+                    _dbContext.SaveChanges();
+                }
+                else
+                    throw new InvalidOperationException($"Entity already exists for {typeof(TEntity)}");
             }
-            else
-                throw new InvalidOperationException($"Entity already exists for {typeof(TEntity)}");
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+            }
+
+            return result;
         }
 
-        public async Task CreateAsync(TEntity entity)
+        public async Task<ResultResponse> CreateAsync(TEntity entity)
         {
-            EntityEntry<TEntity> entry = _dbContext.Entry(entity);
-            object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
-                .Select(x => entry.Property(x.Name).CurrentValue)
-                .ToArray();
-
-            if (await FindAsync(primaryKey) == null)
+            ResultResponse result = new();
+            try
             {
-                PropertyEntry? createdDate = entry?.Properties.SingleOrDefault(x => x.Metadata.Name == "CreatedDate");
+                EntityEntry<TEntity> entry = _dbContext.Entry(entity);
+                object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
+                    .Select(x => entry.Property(x.Name).CurrentValue)
+                    .ToArray();
 
-                if (createdDate != null)
-                    createdDate.CurrentValue = DateTime.UtcNow;
+                if (await FindAsync(primaryKey) == null)
+                {
+                    PropertyEntry? createdDate = entry?.Properties.SingleOrDefault(x => x.Metadata.Name == "CreatedDate");
 
-                _dbContext.Add(entity);
-                _dbContext.SaveChanges();
+                    if (createdDate != null)
+                        createdDate.CurrentValue = DateTime.UtcNow;
+
+                    _dbContext.Add(entity);
+                    _dbContext.SaveChanges();
+                }
+                else
+                    throw new InvalidOperationException($"Entity already exists for {typeof(TEntity)}");
             }
-            else
-                throw new InvalidOperationException($"Entity already exists for {typeof(TEntity)}");
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+            }
+
+            return result;
         }
 
-        public void Update(TEntity entity)
+        public ResultResponse Update(TEntity entity)
         {
-            EntityEntry<TEntity> entry = _dbContext.Entry(entity);
-            object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
-                .Select(x => entry.Property(x.Name).CurrentValue)
-                .ToArray();
-
-            TEntity? existingEntity = Find(primaryKey);
-
-            if (existingEntity != null)
+            ResultResponse result = new();
+            try
             {
-                PropertyEntry? modifiedDate = entry?.Properties.SingleOrDefault(x => x.Metadata.Name == "ModifiedDate");
+                EntityEntry<TEntity> entry = _dbContext.Entry(entity);
+                object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
+                    .Select(x => entry.Property(x.Name).CurrentValue)
+                    .ToArray();
 
-                if (modifiedDate != null)
-                    modifiedDate.CurrentValue = DateTime.UtcNow;
+                TEntity? existingEntity = Find(primaryKey);
 
-                _dbContext.Update(entity);
-                _dbContext.SaveChanges();
+                if (existingEntity != null)
+                {
+                    PropertyEntry? modifiedDate = entry?.Properties.SingleOrDefault(x => x.Metadata.Name == "ModifiedDate");
+
+                    if (modifiedDate != null)
+                        modifiedDate.CurrentValue = DateTime.UtcNow;
+
+                    _dbContext.Update(entity);
+                    _dbContext.SaveChanges();
+                }
+                else
+                    throw new InvalidOperationException($"Entity does not exist for {typeof(TEntity)}");
             }
-            else
-                throw new InvalidOperationException($"Entity does not exist for {typeof(TEntity)}");
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+            }
+
+            return result;
         }
 
-        public async Task UpdateAsync(TEntity entity)
+        public async Task<ResultResponse> UpdateAsync(TEntity entity)
         {
-            EntityEntry<TEntity> entry = _dbContext.Entry(entity);
-            object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
-                .Select(x => entry.Property(x.Name).CurrentValue)
-                .ToArray();
-
-            TEntity? existingEntity = await FindAsync(primaryKey);
-
-            if (existingEntity != null)
+            ResultResponse result = new();
+            try
             {
-                PropertyEntry? modifiedDate = entry?.Properties.SingleOrDefault(x => x.Metadata.Name == "ModifiedDate");
+                EntityEntry<TEntity> entry = _dbContext.Entry(entity);
+                object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
+                    .Select(x => entry.Property(x.Name).CurrentValue)
+                    .ToArray();
 
-                if (modifiedDate != null)
-                    modifiedDate.CurrentValue = DateTime.UtcNow;
+                TEntity? existingEntity = await FindAsync(primaryKey);
 
-                _dbContext.Update(entity);
-                _dbContext.SaveChanges();
+                if (existingEntity != null)
+                {
+                    PropertyEntry? modifiedDate = entry?.Properties.SingleOrDefault(x => x.Metadata.Name == "ModifiedDate");
+
+                    if (modifiedDate != null)
+                        modifiedDate.CurrentValue = DateTime.UtcNow;
+
+                    _dbContext.Update(entity);
+                    _dbContext.SaveChanges();
+                }
+                else
+                    throw new InvalidOperationException($"Entity does not exist for {typeof(TEntity)}");
             }
-            else
-                throw new InvalidOperationException($"Entity does not exist for {typeof(TEntity)}");
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+            }
+
+            return result;
         }
 
-        public void Delete(TEntity entity)
+        public ResultResponse Delete(TEntity entity)
         {
-            EntityEntry<TEntity> entry = _dbContext.Entry(entity);
-            object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
-                .Select(x => entry.Property(x.Name).CurrentValue)
-                .ToArray();
-
-            TEntity? existingEntity = Find(primaryKey);
-
-            if (existingEntity != null)
+            ResultResponse result = new();
+            try
             {
-                _dbContext.Remove(entity);
-                _dbContext.SaveChanges();
+                EntityEntry<TEntity> entry = _dbContext.Entry(entity);
+                object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
+                    .Select(x => entry.Property(x.Name).CurrentValue)
+                    .ToArray();
+
+                TEntity? existingEntity = Find(primaryKey);
+
+                if (existingEntity != null)
+                {
+                    _dbContext.Remove(entity);
+                    _dbContext.SaveChanges();
+                }
+                else
+                    throw new InvalidOperationException($"Entity does not exist for {typeof(TEntity)}");
             }
-            else
-                throw new InvalidOperationException($"Entity does not exist for {typeof(TEntity)}");
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+            }
+
+            return result;
         }
 
-        public async Task DeleteAsync(TEntity entity)
+        public async Task<ResultResponse> DeleteAsync(TEntity entity)
         {
-            EntityEntry<TEntity> entry = _dbContext.Entry(entity);
-            object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
-                .Select(x => entry.Property(x.Name).CurrentValue)
-                .ToArray();
-
-            TEntity? existingEntity = await FindAsync(primaryKey);
-
-            if (existingEntity != null)
+            ResultResponse result = new();
+            try
             {
-                _dbContext.Remove(entity);
-                _dbContext.SaveChanges();
+                EntityEntry<TEntity> entry = _dbContext.Entry(entity);
+                object?[]? primaryKey = entry?.Metadata?.FindPrimaryKey()?.Properties
+                    .Select(x => entry.Property(x.Name).CurrentValue)
+                    .ToArray();
+
+                TEntity? existingEntity = await FindAsync(primaryKey);
+
+                if (existingEntity != null)
+                {
+                    _dbContext.Remove(entity);
+                    _dbContext.SaveChanges();
+                }
+                else
+                    throw new InvalidOperationException($"Entity does not exist for {typeof(TEntity)}");
             }
-            else
-                throw new InvalidOperationException($"Entity does not exist for {typeof(TEntity)}");
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+            }
+
+            return result;
         }
 
         private IQueryable<TEntity> IncludeInQuery(Expression<Func<TEntity, object>>[] include)
@@ -233,7 +294,7 @@ namespace Clean.Infrastructure.SQL
                 : query.AsEnumerable();
         }
 
-        public IEnumerable<TEntity> GetAll(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, 
+        public IEnumerable<TEntity> GetAll(Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             params Expression<Func<TEntity, object>>[] include)
         {
             IQueryable<TEntity> query = include.Any()

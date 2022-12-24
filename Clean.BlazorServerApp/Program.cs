@@ -1,8 +1,10 @@
+using Clean.Domain.ExampleContext.Extensions;
+using Clean.Infrastructure.ExampleContext;
 using Clean.Infrastructure.SQL;
-using Clean.Domain.ExampleContext;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.SQLInfrastructure();
+builder.Services.ExampleInfrastructure();
 builder.Services.ExampleDomain();
 
 // Add services to the container.

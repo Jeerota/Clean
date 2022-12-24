@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Clean.Application.Common.Helpers
+namespace Clean.Domain.Common.Helpers
 {
     public static class PredicateBuilder
     {
@@ -24,7 +24,7 @@ namespace Clean.Application.Common.Helpers
             return Expression.Lambda<Func<TEntity, bool>>(neagte, expression.Parameters);
         }
 
-        static Expression<TEntity> Compose<TEntity>(this Expression<TEntity> first, Expression<TEntity> second, Func<Expression, Expression, Expression> merge)
+        private static Expression<TEntity> Compose<TEntity>(this Expression<TEntity> first, Expression<TEntity> second, Func<Expression, Expression, Expression> merge)
         {
             var map = first.Parameters
                 .Select((f, i) => new { f, s = second.Parameters[i] })
@@ -35,7 +35,7 @@ namespace Clean.Application.Common.Helpers
             return Expression.Lambda<TEntity>(merge(first.Body, secondBody), first.Parameters);
         }
 
-        class ParameterRebinder : ExpressionVisitor
+        private class ParameterRebinder : ExpressionVisitor
         {
             readonly Dictionary<ParameterExpression, ParameterExpression> Map;
 
@@ -51,7 +51,7 @@ namespace Clean.Application.Common.Helpers
 
             protected override Expression VisitParameter(ParameterExpression parameterExpression)
             {
-                if (Map.TryGetValue(parameterExpression, out ParameterExpression replacement))
+                if (Map.TryGetValue(parameterExpression, out ParameterExpression? replacement))
                 {
                     parameterExpression = replacement;
                 }

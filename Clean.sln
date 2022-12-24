@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clean.Infrastructure", "Cle
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clean.Domain", "Clean.Domain\Clean.Domain.csproj", "{BBD9DF98-3224-465B-845B-E0C02EEF8D74}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clean.Application", "Clean.Application\Clean.Application.csproj", "{5042C2FD-3729-4D08-B6E3-092D8EBECAD5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clean.BlazorServerApp", "Clean.BlazorServerApp\Clean.BlazorServerApp.csproj", "{E0759E1D-C1D5-4865-9A8B-8D004BEE6355}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Clean.ExampleDb", "ExampleDb\Clean.ExampleDb.sqlproj", "{85A36028-BEFF-423B-849A-906526E2388B}"
@@ -27,10 +25,6 @@ Global
 		{BBD9DF98-3224-465B-845B-E0C02EEF8D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBD9DF98-3224-465B-845B-E0C02EEF8D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBD9DF98-3224-465B-845B-E0C02EEF8D74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5042C2FD-3729-4D08-B6E3-092D8EBECAD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5042C2FD-3729-4D08-B6E3-092D8EBECAD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5042C2FD-3729-4D08-B6E3-092D8EBECAD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5042C2FD-3729-4D08-B6E3-092D8EBECAD5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0759E1D-C1D5-4865-9A8B-8D004BEE6355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0759E1D-C1D5-4865-9A8B-8D004BEE6355}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0759E1D-C1D5-4865-9A8B-8D004BEE6355}.Release|Any CPU.ActiveCfg = Release|Any CPU

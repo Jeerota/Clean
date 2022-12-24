@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Clean.Domain.ExampleContext
+namespace Clean.Infrastructure.ExampleContext
 {
     public class ExampleDbContext : DbContext
     {
@@ -14,13 +14,12 @@ namespace Clean.Domain.ExampleContext
         {
             if (configuration["ExampleDbConnectionString"] == null)
                 throw new ArgumentNullException(nameof(configuration));
-
-            _connectionString = configuration["ExampleDbConnectionString"];
+            else
+                _connectionString = configuration["ExampleDbConnectionString"];
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
             optionsBuilder.UseSqlServer(_connectionString);
         }
 
@@ -29,7 +28,7 @@ namespace Clean.Domain.ExampleContext
 
         }
 
-        public DbSet<Example> Examples { get; set; }
-        public DbSet<Sample> Samples { get; set; }
+        public DbSet<Example>? Examples { get; set; }
+        public DbSet<Sample>? Samples { get; set; }
     }
 }
