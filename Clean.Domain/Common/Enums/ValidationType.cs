@@ -6,7 +6,7 @@
         LengthExceeded = 1,
     }
 
-    static class ValidationTypeExtensions
+    public static class ValidationTypeExtensions
     {
         public static string Message(this ValidationType validationType, string objectName = "Value")
         {
