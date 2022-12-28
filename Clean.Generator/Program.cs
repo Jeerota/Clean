@@ -39,3 +39,4 @@ foreach (TSqlObject sqlTable in sqlTables)
 }
 
 new DomainGenerator(context);
+new InfrastructureGenerator(context);

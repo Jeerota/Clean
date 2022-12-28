@@ -77,8 +77,7 @@ namespace Clean.Generator
             foreach (Column column in table.Columns)
             {
                 string dataType = "string"; //ToDo: Get data type of column
-                string setter = "{ get; set; }";
-                _ColumnBuilder.AppendLine($"\t\tpublic {dataType} {column.Name} {setter}");
+                _ColumnBuilder.AppendLine($"\t\tpublic {dataType} {column.Name} {{ get; set; }}");
             }
             templateText = templateText.Replace("//Columns", _ColumnBuilder.ToString());
 

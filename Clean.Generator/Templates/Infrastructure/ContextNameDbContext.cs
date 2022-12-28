@@ -28,6 +28,6 @@ namespace Clean.Infrastructure.ContextNameContext
 
         }
 
-        //Tables public DbSet<Template>? Examples { get; set; }
+//Tables
     }
 }

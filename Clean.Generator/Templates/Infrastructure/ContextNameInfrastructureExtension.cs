@@ -9,7 +9,7 @@ namespace Clean.Infrastructure.ContextNameContext
     {
         public static void ContextNameInfrastructure(this IServiceCollection services)
         {
-            //RepositoryScoped services.AddScoped<IRepository<TableName>, SQLRepository<ExampleDbContext, Template>>(); services.AddScoped<IReadOnlyRepository<TableName>, SQLRepository<ExampleDbContext, Template>>();
+//ScopedRepositories
         }
     }
 }
