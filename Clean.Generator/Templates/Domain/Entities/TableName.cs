@@ -14,9 +14,8 @@ namespace Clean.Domain.ContextNameContext.Entities
     public class TableName : BaseEntity
     {
 //Columns
-
-//ForeignKeys
-
+//ForeignKeysDefinition
+//ForeignKeysForeign
         public ResultResponse Validate()
         {
             ResultResponse result = new();

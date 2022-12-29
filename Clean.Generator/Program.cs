@@ -36,7 +36,24 @@ foreach (TSqlObject sqlTable in sqlTables)
 
             table.Columns.Add(column);
         }
+    }
 
+    IEnumerable<TSqlObject> sqlForeignKeys = sqlTable.GetChildren().Where(child => child.ObjectType.Name == "ForeignKeyConstraint");
+    foreach (TSqlObject sqlForeignKey in sqlForeignKeys)
+    {
+        ForeignKey foreignKey = new(sqlForeignKey.Name.Parts[1])
+        {
+            ForeignTable = sqlForeignKey.GetReferenced(Microsoft.SqlServer.Dac.Model.ForeignKeyConstraint.ForeignTable).FirstOrDefault()?.Name.Parts[1],
+            DefiningTable = sqlTable.Name.Parts[1]
+        };
+
+        var foreignColumns = sqlForeignKey.GetReferenced(Microsoft.SqlServer.Dac.Model.ForeignKeyConstraint.ForeignColumns);
+        var definingColumns = sqlForeignKey.GetReferenced(Microsoft.SqlServer.Dac.Model.ForeignKeyConstraint.Columns);
+
+        foreignKey.ForeignColumns.AddRange(foreignColumns.Select(col => col.Name.Parts[2]));
+        foreignKey.DefiningColumns.AddRange(definingColumns.Select(col => col.Name.Parts[2]));
+
+        table.ForeignKeys.Add(foreignKey);
     }
 
     context.Tables.Add(table);
