@@ -2,10 +2,10 @@
 
 <PageTitle>Example Data</PageTitle>
 
-@inject IExampleService _exampleService;
-@inject ISampleService _sampleService;
-
 <h1>Examples</h1>
+
+@inject IExamplesService _exampleService;
+@inject ISamplesService _sampleService;
 
 @if (exampleDbs == null)
 {
@@ -46,11 +46,11 @@ else
 }
 
 @code {
-    private IEnumerable<Example>? exampleDbs;
+    private IEnumerable<Examples>? exampleDbs;
 
     protected override void OnInitialized()
     {
-        ExampleLookupRequest exampleLookupRequest = new()
+        ExamplesLookupRequest exampleLookupRequest = new()
             {
                 CreatedDate = DateTime.Today,
                 FilterType = FilterType.GreaterThan
@@ -60,14 +60,14 @@ else
 
         if (!exampleDbs.Any())
         {
-            Example newExample = new Example() { Name = "Example", Samples = new List<Sample>() };
+            Examples newExample = new Examples() { Name = "Example", Samples = new List<Samples>() };
             newExample.Samples.Add(new() { Name = "Sample 1" });
             newExample.Samples.Add(new() { Name = "Sample 2" });
             _exampleService.Create(newExample);
         }
     }
 
-    void CreatedDateChange(ChangeEventArgs arguments, Example example)
+    void CreatedDateChange(ChangeEventArgs arguments, Examples example)
     {
         if(arguments.Value != null
             && DateTime.TryParse((string)arguments.Value, out DateTime newDate)
@@ -78,7 +78,7 @@ else
         }
     }
 
-    void NameChange(ChangeEventArgs arguments, Example example)
+    void NameChange(ChangeEventArgs arguments, Examples example)
     {
         if ((string?)arguments.Value != example.Name)
         {
@@ -87,7 +87,7 @@ else
         }
     }
 
-    void NameChange(ChangeEventArgs arguments, Sample sample)
+    void NameChange(ChangeEventArgs arguments, Samples sample)
     {
         if ((string?)arguments.Value != sample.Name)
         {
@@ -96,12 +96,12 @@ else
         }
     }
 
-    void Delete(Example example)
+    void Delete(Examples example)
     {
         _exampleService.Delete(example);
     }
 
-    void Delete(Sample sample)
+    void Delete(Samples sample)
     {
         _sampleService.Delete(sample);
     }

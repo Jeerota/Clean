@@ -1,4 +1,8 @@
-﻿using Clean.Domain.ExampleContext.Entities;
+//This file was auto-genearted by the Clean.Generator.//
+//Any modifications to this file will be overwritten on the next run of the generator.//
+//Last Generated: 12/29/2022 03:37//
+
+using Clean.Domain.ExampleContext.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -28,7 +32,8 @@ namespace Clean.Infrastructure.ExampleContext
 
         }
 
-        public DbSet<Example>? Examples { get; set; }
-        public DbSet<Sample>? Samples { get; set; }
+		public DbSet<Examples>? Examples { get; set; }
+		public DbSet<Samples>? Samples { get; set; }
+
     }
 }
