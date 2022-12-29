@@ -1,9 +1,5 @@
 ﻿using Clean.Generator.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Clean.Generator
 {
@@ -13,14 +9,13 @@ namespace Clean.Generator
 
         private Context Context;
         private string _SaveLocation;
-        private StringBuilder? _ColumnBuilder;
-        private List<string> _ScopedServices;
+        private DateTime _GenerationTime;
 
         public InfrastructureGenerator(Context context)
         {
             Context = context ?? throw new ArgumentNullException(nameof(context));
             _SaveLocation = $"C:\\temp\\Infrastructure\\{Context.Name}Context";
-
+            _GenerationTime = DateTime.UtcNow;
 
             GenerateDbContext();
             GenerateExtension();
@@ -47,6 +42,7 @@ namespace Clean.Generator
         {
             string templateText = ReadTemplateText("ContextNameDbContext.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
+            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
 
             StringBuilder tables = new();
             foreach (Table table in Context.Tables)
@@ -63,6 +59,7 @@ namespace Clean.Generator
         {
             string templateText = ReadTemplateText("ContextNameInfrastructureExtension.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
+            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
 
             StringBuilder scopedRepositories = new();
             foreach (Table table in Context.Tables)

@@ -1,4 +1,8 @@
-﻿using Clean.Domain.Common.Interfaces;
+﻿//This file was auto-genearted by the Clean.Generator.//
+//Any modifications to this file will be overwritten on the next run of the generator.//
+//Last Generated: GeneratedDateTimeStamp//
+
+using Clean.Domain.Common.Interfaces;
 using Clean.Domain.ContextNameContext.Entities;
 using Clean.Infrastructure.SQL;
 using Microsoft.Extensions.DependencyInjection;

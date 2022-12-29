@@ -1,9 +1,5 @@
 ﻿using Clean.Generator.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Clean.Generator
 {
@@ -15,11 +11,14 @@ namespace Clean.Generator
         private string _SaveLocation;
         private StringBuilder? _ColumnBuilder;
         private List<string> _ScopedServices;
+        private Dictionary<string, StringBuilder> _FileForeignKeysMap = new();
+        private DateTime _GenerationTime;
 
         public DomainGenerator(Context context)
         {
             Context = context ?? throw new ArgumentNullException(nameof(context));
             _SaveLocation = $"C:\\temp\\Domain\\{Context.Name}Context";
+            _GenerationTime = DateTime.UtcNow;
 
             _ScopedServices = new();
             foreach (Table table in context.Tables)
@@ -54,6 +53,7 @@ namespace Clean.Generator
         {
             string templateText = ReadTemplateText("Extensions\\ContextNameDomainExtension.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
+            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
 
             StringBuilder scopedServices = new();
             foreach (string service in _ScopedServices)
@@ -72,12 +72,13 @@ namespace Clean.Generator
 
             string templateText = ReadTemplateText("Entities\\TableName.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
+            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
             templateText = templateText.Replace("TableName", table.Name);
 
             foreach (Column column in table.Columns)
             {
-                string dataType = "string"; //ToDo: Get data type of column
-                _ColumnBuilder.AppendLine($"\t\tpublic {dataType} {column.Name} {{ get; set; }}");
+                string nullable = column.Nullable ? "?" : "";
+                _ColumnBuilder.AppendLine($"\t\tpublic {column.DataType.ToString()}{nullable} {column.Name} {{ get; set; }}");
             }
             templateText = templateText.Replace("//Columns", _ColumnBuilder.ToString());
 
@@ -91,6 +92,7 @@ namespace Clean.Generator
 
             string templateText = ReadTemplateText("Models\\LookupRequests\\TableNameLookupRequest.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
+            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
             templateText = templateText.Replace("TableName", table.Name);
             templateText = templateText.Replace("//Columns", _ColumnBuilder.ToString());
 
@@ -104,6 +106,7 @@ namespace Clean.Generator
 
             string templateText = ReadTemplateText("Services\\TableNameService.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
+            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
             templateText = templateText.Replace("TableName", table.Name);
 
             WriteFile($"{_SaveLocation}\\Services", $"{table.Name}Service.cs", templateText);

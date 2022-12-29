@@ -1,6 +1,7 @@
 ﻿using Clean.Generator;
 using Clean.Generator.Models;
 using Microsoft.SqlServer.Dac.Model;
+using System.Data;
 
 HashSet<string> baseColumns = new()
 {
@@ -22,13 +23,16 @@ foreach (TSqlObject sqlTable in sqlTables)
         string columnName = sqlColumn.Name.Parts[2];
         if (!baseColumns.Contains(columnName))
         {
-            Clean.Generator.Models.Column column = new(columnName);
+            SqlDataType sqlDataType = (SqlDataType)sqlColumn
+                .GetReferenced(Microsoft.SqlServer.Dac.Model.Column.DataType)
+                .FirstOrDefault()?
+                .GetProperty(DataType.SqlDataType);
 
-            foreach (var property in sqlColumn.ObjectType.Properties)
-                column.Properties.Add(property.Name);
-
-            foreach (var metaData in sqlColumn.ObjectType.Metadata)
-                column.Metadata.Add(metaData.Name);
+            Clean.Generator.Models.Column column = new(columnName)
+            {
+                DataType = SQLConvertorHelper.GetCLRType(sqlDataType),
+                Nullable = (bool)sqlColumn.GetProperty(Microsoft.SqlServer.Dac.Model.Column.Nullable)
+            };
 
             table.Columns.Add(column);
         }
