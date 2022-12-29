@@ -31,7 +31,8 @@ foreach (TSqlObject sqlTable in sqlTables)
             Clean.Generator.Models.Column column = new(columnName)
             {
                 DataType = SQLConvertorHelper.GetCLRType(sqlDataType),
-                Nullable = (bool)sqlColumn.GetProperty(Microsoft.SqlServer.Dac.Model.Column.Nullable)
+                Nullable = (bool)sqlColumn.GetProperty(Microsoft.SqlServer.Dac.Model.Column.Nullable),
+                Identity = (bool)sqlColumn.GetProperty(Microsoft.SqlServer.Dac.Model.Column.IsIdentity)
             };
 
             table.Columns.Add(column);

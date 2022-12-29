@@ -9,9 +9,8 @@ namespace Clean.Generator
 
         private Context Context;
         private string _SaveLocation;
-        private StringBuilder? _ColumnBuilder;
         private List<string> _ScopedServices;
-        private Dictionary<string, List<ForeignKey>> _TableForeignKeysMap = new();
+        private Dictionary<string, List<ForeignKey>> _TableForeignKeysMap;
         private DateTime _GenerationTime;
 
         public DomainGenerator(Context context)
@@ -21,9 +20,9 @@ namespace Clean.Generator
             _GenerationTime = DateTime.UtcNow;
 
             _ScopedServices = new();
+            _TableForeignKeysMap = new();
             foreach (Table table in context.Tables)
             {
-                _ColumnBuilder = new();
                 GenerateEntity(table);
                 GenerateLookupRequest(table);
                 GenerateService(table);
@@ -99,9 +98,6 @@ namespace Clean.Generator
 
         private void GenerateEntity(Table table)
         {
-            if (_ColumnBuilder == null)
-                throw new(nameof(_ColumnBuilder));
-
             if (!_TableForeignKeysMap.ContainsKey(table.Name))
                 _TableForeignKeysMap.Add(table.Name, new List<ForeignKey>());
 
@@ -110,18 +106,19 @@ namespace Clean.Generator
             templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
             templateText = templateText.Replace("TableName", table.Name);
 
+            StringBuilder columnBuilder = new();
             foreach (Column column in table.Columns)
             {
-                string nullable = column.Nullable ? "?" : "";
+                string nullable = column.Nullable || column.Identity ? "?" : "";
 
                 foreach (ForeignKey foreignKey in table.ForeignKeys.Where(key => key.DefiningColumns.Contains(column.Name)))
                 {
-                    _ColumnBuilder.AppendLine($"\t\t[ForeignKey(\"{foreignKey.ForeignTable}\")]");
+                    columnBuilder.AppendLine($"\t\t[ForeignKey(\"{foreignKey.ForeignTable}\")]");
                 }
 
-                _ColumnBuilder.AppendLine($"\t\tpublic {column.DataType.ToString()}{nullable} {column.Name} {{ get; set; }}");
+                columnBuilder.AppendLine($"\t\tpublic {column.DataType.ToString()}{nullable} {column.Name} {{ get; set; }}");
             }
-            templateText = templateText.Replace("//Columns", _ColumnBuilder.ToString());
+            templateText = templateText.Replace("//Columns", columnBuilder.ToString());
 
             StringBuilder foreignKeys = new();
             foreach (ForeignKey foreignKey in table.ForeignKeys)
@@ -139,23 +136,23 @@ namespace Clean.Generator
 
         private void GenerateLookupRequest(Table table)
         {
-            if (_ColumnBuilder == null)
-                throw new(nameof(_ColumnBuilder));
-
             string templateText = ReadTemplateText("Models\\LookupRequests\\TableNameLookupRequest.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
             templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
             templateText = templateText.Replace("TableName", table.Name);
-            templateText = templateText.Replace("//Columns", _ColumnBuilder.ToString());
+
+            StringBuilder columnBuilder = new();
+            foreach (Column column in table.Columns)
+            {
+                columnBuilder.AppendLine($"\t\tpublic {column.DataType.ToString()}? {column.Name} {{ get; set; }}");
+            }
+            templateText = templateText.Replace("//Columns", columnBuilder.ToString());
 
             WriteFile($"{_SaveLocation}\\Models\\LookupRequests", $"{table.Name}LookupRequest.cs", templateText);
         }
 
         private void GenerateService(Table table)
         {
-            if (_ColumnBuilder == null)
-                throw new(nameof(_ColumnBuilder));
-
             string templateText = ReadTemplateText("Services\\TableNameService.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
             templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
