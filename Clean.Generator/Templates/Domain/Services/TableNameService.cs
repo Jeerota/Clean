@@ -11,6 +11,7 @@ namespace Clean.Domain.ContextNameContext.Services
     public interface ITableNameService
     {
         ResultResponse Create(TableName entity);
+        IEnumerable<TableName> GetAll();
         IEnumerable<TableName> Get(TableNameLookupRequest lookupRequest);
         ResultResponse Update(TableName entity);
         ResultResponse Delete(TableName entity);
@@ -33,6 +34,11 @@ namespace Clean.Domain.ContextNameContext.Services
                 result = _TableNameRepository.Create(entity);
 
             return result;
+        }
+
+        public IEnumerable<TableName> GetAll()
+        {
+            return _TableNameRepository.GetAll();
         }
 
         public IEnumerable<TableName> Get(TableNameLookupRequest lookupRequest)

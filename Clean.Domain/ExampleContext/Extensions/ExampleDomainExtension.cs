@@ -10,8 +10,9 @@ namespace Clean.Domain.ExampleContext.Extensions
     {
         public static void ExampleDomain(this IServiceCollection services)
         {
-			services.AddScoped<IExamplesService, ExamplesService>();
-			services.AddScoped<ISamplesService, SamplesService>();
+			services.AddScoped<IDriversService, DriversService>();
+			services.AddScoped<ILocationsService, LocationsService>();
+			services.AddScoped<IVehiclesService, VehiclesService>();
 
         }
     }

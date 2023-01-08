@@ -1,117 +1,81 @@
 ﻿@page "/fetchdata"
 
-<PageTitle>Example Data</PageTitle>
+@inject IVehiclesService _vehiclesService;
+@inject IDriversService _driversService;
+@inject ILocationsService _locationsService;
 
-<h1>Examples</h1>
+<PageTitle>Fetch Data</PageTitle>
 
-@inject IExamplesService _exampleService;
-@inject ISamplesService _sampleService;
+<div>
+    <button @onclick="@ToggleLocationsGrid">Locations</button>
+    <button @onclick="@ToggleVehiclesGrid">Vehicles</button>
+    <button @onclick="@ToggleDriversGrid">Drivers</button>
+</div>
 
-@if (exampleDbs == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var exampleDb in exampleDbs)
-            {
-                <tr>
-                    <td><input type="datetime" @onchange="(a) => CreatedDateChange(a, exampleDb)" value="@exampleDb.CreatedDate" /></td>
-                    <td><input @onchange="(a) => NameChange(a, exampleDb)" value="@exampleDb.Name" /></td>
-                    <td><button @onclick="() => Delete(exampleDb)">Delete</button></td>
-                    <td><button @onclick="() => AddSample(exampleDb)">Add Sample</button></td>
-                </tr>
-                @if (exampleDb.Samples != null)
-                {
-                    @foreach (var sampleDb in exampleDb.Samples)
-                    {
-                        <tr>
-                            <td>@exampleDb.CreatedDate</td>
-                            <td><input @onchange="(a) => NameChange(a, sampleDb)" value="@sampleDb.Name" /></td>
-                            <td colspan="2"><button @onclick="() => Delete(sampleDb)">Delete</button></td>
-                        </tr>
-                    }        
-                }
-            }
-        </tbody>
-    </table>
-}
+<div hidden="@displayDriversGrid">
+</div>
+
+<div hidden="@displayLocationsGrid">
+</div>
+
+<div hidden="@displayVehiclesGrid">
+</div>
+
+<div hidden="@displayDriversPopOut">
+</div>
+
+<div hidden="@displayLocationsPopOut">
+</div>
+
+<div hidden="@displayVehiclesPopOut">
+</div>
 
 @code {
-    private IEnumerable<Examples>? exampleDbs;
+    private bool displayDriversGrid = false;
+    private bool displayDriversPopOut = false;
+    private bool displayLocationsGrid = false;
+    private bool displayLocationsPopOut = false;
+    private bool displayVehiclesGrid = false;
+    private bool displayVehiclesPopOut = false;
 
-    protected override void OnInitialized()
+    IEnumerable<Vehicles> _vehicles { get; set; }
+    IEnumerable<Drivers> _drivers { get; set; }
+    IEnumerable<Locations> _locations { get; set; }
+
+    public void OnInitilization()
     {
-        ExamplesLookupRequest exampleLookupRequest = new()
-            {
-                CreatedDate = DateTime.Today,
-                FilterType = FilterType.GreaterThan
-            };
-
-        exampleDbs = _exampleService.Get(exampleLookupRequest);
-
-        if (!exampleDbs.Any())
-        {
-            Examples newExample = new Examples() { Name = "Example" };
-            _exampleService.Create(newExample);
-        }
+        _vehicles = _vehiclesService.GetAll();
+        _drivers = _driversService.GetAll();
+        _locations = _locationsService.GetAll();
     }
 
-    void CreatedDateChange(ChangeEventArgs arguments, Examples example)
+    public void ToggleDriversGrid()
     {
-        if(arguments.Value != null
-            && DateTime.TryParse((string)arguments.Value, out DateTime newDate)
-            && newDate != example.CreatedDate)
-        {
-            example.CreatedDate = newDate;
-            _exampleService.Update(example);
-        }
+        displayDriversGrid = !displayDriversGrid;
     }
 
-    void NameChange(ChangeEventArgs arguments, Examples example)
+    public void ToggleLocationsGrid()
     {
-        if ((string?)arguments.Value != example.Name)
-        {
-            example.Name = (string?)arguments.Value;
-            _exampleService.Update(example);
-        }
+        displayLocationsGrid = !displayLocationsGrid;
     }
 
-    void NameChange(ChangeEventArgs arguments, Samples sample)
+    public void ToggleVehiclesGrid()
     {
-        if ((string?)arguments.Value != sample.Name)
-        {
-            sample.Name = (string?)arguments.Value;
-            _sampleService.Update(sample);
-        }
+        displayVehiclesGrid = !displayVehiclesGrid;
     }
 
-    void Delete(Examples example)
+    public void ToggleDriversPopOut()
     {
-        _exampleService.Delete(example);
+        displayDriversPopOut = !displayDriversPopOut;
     }
 
-    void AddSample(Examples example)
+    public void ToggleLocationsPopOut()
     {
-        Samples sample = new()
-            {
-                ExampleId = example.Id.Value,
-                Name = "Sample",
-            };
-        _sampleService.Create(sample);
+        displayLocationsPopOut = !displayLocationsPopOut;
     }
 
-    void Delete(Samples sample)
+    public void ToggleVehiclesPopOut()
     {
-        _sampleService.Delete(sample);
+        displayVehiclesPopOut = !displayVehiclesPopOut;
     }
 }

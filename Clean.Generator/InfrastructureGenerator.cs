@@ -67,7 +67,6 @@ namespace Clean.Generator
             foreach (Table table in Context.Tables)
             {
                 scopedRepositories.AppendLine($"\t\t\tservices.AddScoped<IRepository<{table.Name}>, SQLRepository<{Context.Name}DbContext, {table.Name}>>();");
-                scopedRepositories.AppendLine($"\t\t\tservices.AddScoped<IReadOnlyRepository<{table.Name}>, SQLRepository<{Context.Name}DbContext, {table.Name}>>();"); //ToDo: Research/Test. May only need to call Full Repo for extensions.
             }
             templateText = templateText.Replace("//ScopedRepositories", scopedRepositories.ToString());
 

@@ -12,10 +12,9 @@ namespace Clean.Infrastructure.ExampleContext
     {
         public static void ExampleInfrastructure(this IServiceCollection services)
         {
-			services.AddScoped<IRepository<Examples>, SQLRepository<ExampleDbContext, Examples>>();
-			services.AddScoped<IReadOnlyRepository<Examples>, SQLRepository<ExampleDbContext, Examples>>();
-			services.AddScoped<IRepository<Samples>, SQLRepository<ExampleDbContext, Samples>>();
-			services.AddScoped<IReadOnlyRepository<Samples>, SQLRepository<ExampleDbContext, Samples>>();
+			services.AddScoped<IRepository<Drivers>, SQLRepository<ExampleDbContext, Drivers>>();
+			services.AddScoped<IRepository<Locations>, SQLRepository<ExampleDbContext, Locations>>();
+			services.AddScoped<IRepository<Vehicles>, SQLRepository<ExampleDbContext, Vehicles>>();
 
         }
     }

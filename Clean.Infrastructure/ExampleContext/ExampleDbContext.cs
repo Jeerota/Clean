@@ -31,8 +31,9 @@ namespace Clean.Infrastructure.ExampleContext
 
         }
 
-		public DbSet<Examples>? Examples { get; set; }
-		public DbSet<Samples>? Samples { get; set; }
+		public DbSet<Drivers>? Drivers { get; set; }
+		public DbSet<Locations>? Locations { get; set; }
+		public DbSet<Vehicles>? Vehicles { get; set; }
 
     }
 }

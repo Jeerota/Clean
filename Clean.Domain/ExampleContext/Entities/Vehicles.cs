@@ -9,16 +9,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Clean.Domain.ExampleContext.Entities
 {
-    [Table("Samples")]
-    public class Samples : BaseEntity
+    [Table("Vehicles")]
+    public class Vehicles : BaseEntity
     {
 		public System.Int64? Id { get; set; }
-		[ForeignKey("Examples")]
-		public System.Int64 ExampleId { get; set; }
+		[ForeignKey("Locations")]
+		public System.Int64 LocationId { get; set; }
 		public System.String? Name { get; set; }
+		public System.String? Make { get; set; }
+		public System.String? Model { get; set; }
+		public System.String? Plate { get; set; }
+		public System.String? VIN { get; set; }
 
-		public virtual ICollection<Examples> Examples { get; set; }
+		public virtual ICollection<Locations> Locations { get; set; }
 
+		[ForeignKey("VehicleId")]
+		public virtual ICollection<Drivers> Drivers { get; set; }
 
         public ResultResponse Validate()
         {

@@ -59,7 +59,8 @@
     <Folder Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Examples.sql" />
-    <Build Include="Sample.sql" />
+    <Build Include="Locations.sql" />
+    <Build Include="Vehicles.sql" />
+    <Build Include="Drivers.sql" />
   </ItemGroup>
 </Project>

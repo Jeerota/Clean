@@ -1,8 +1,6 @@
 ﻿using Clean.Generator;
 using Clean.Generator.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.SqlServer.Dac.Model;
-using System.Data;
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false)
