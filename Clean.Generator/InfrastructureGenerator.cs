@@ -1,4 +1,5 @@
 ﻿using Clean.Generator.Models;
+using Microsoft.Extensions.Configuration;
 using System.Text;
 
 namespace Clean.Generator
@@ -6,15 +7,18 @@ namespace Clean.Generator
     public class InfrastructureGenerator
     {
         private const string _TemplateDirectory = "C:\\Users\\Justin\\Source\\Repos\\Clean.Infrastructure\\Clean.Generator\\Templates\\Infrastructure";
+        private readonly string _OutputDirectory;
 
         private Context Context;
         private string _SaveLocation;
         private DateTime _GenerationTime;
 
-        public InfrastructureGenerator(Context context)
+        public InfrastructureGenerator(IConfiguration config, Context context)
         {
+            _OutputDirectory = config["Values:InfrastructureOutputDirectory"];
+
             Context = context ?? throw new ArgumentNullException(nameof(context));
-            _SaveLocation = $"C:\\temp\\Infrastructure\\{Context.Name}Context";
+            _SaveLocation = $"{_OutputDirectory}\\{Context.Name}Context";
             _GenerationTime = DateTime.UtcNow;
 
             GenerateDbContext();
@@ -42,7 +46,6 @@ namespace Clean.Generator
         {
             string templateText = ReadTemplateText("ContextNameDbContext.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
-            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
 
             StringBuilder tables = new();
             foreach (Table table in Context.Tables)
@@ -59,7 +62,6 @@ namespace Clean.Generator
         {
             string templateText = ReadTemplateText("ContextNameInfrastructureExtension.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
-            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
 
             StringBuilder scopedRepositories = new();
             foreach (Table table in Context.Tables)

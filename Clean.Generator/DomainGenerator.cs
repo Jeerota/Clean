@@ -1,4 +1,5 @@
 ﻿using Clean.Generator.Models;
+using Microsoft.Extensions.Configuration;
 using System.Text;
 
 namespace Clean.Generator
@@ -6,18 +7,19 @@ namespace Clean.Generator
     public class DomainGenerator
     {
         private const string _TemplateDirectory = "C:\\Users\\Justin\\Source\\Repos\\Clean.Infrastructure\\Clean.Generator\\Templates\\Domain";
+        private readonly string _OutputDirectory;
 
         private Context Context;
         private string _SaveLocation;
         private List<string> _ScopedServices;
         private Dictionary<string, List<ForeignKey>> _TableForeignKeysMap;
-        private DateTime _GenerationTime;
 
-        public DomainGenerator(Context context)
+        public DomainGenerator(IConfiguration config, Context context)
         {
+            _OutputDirectory = config["Values:DomainOutputDirectory"];
+
             Context = context ?? throw new ArgumentNullException(nameof(context));
-            _SaveLocation = $"C:\\temp\\Domain\\{Context.Name}Context";
-            _GenerationTime = DateTime.UtcNow;
+            _SaveLocation = $"{_OutputDirectory}\\{Context.Name}Context";
 
             _ScopedServices = new();
             _TableForeignKeysMap = new();
@@ -84,7 +86,6 @@ namespace Clean.Generator
         {
             string templateText = ReadTemplateText("Extensions\\ContextNameDomainExtension.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
-            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
 
             StringBuilder scopedServices = new();
             foreach (string service in _ScopedServices)
@@ -103,7 +104,6 @@ namespace Clean.Generator
 
             string templateText = ReadTemplateText("Entities\\TableName.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
-            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
             templateText = templateText.Replace("TableName", table.Name);
 
             StringBuilder columnBuilder = new();
@@ -138,7 +138,6 @@ namespace Clean.Generator
         {
             string templateText = ReadTemplateText("Models\\LookupRequests\\TableNameLookupRequest.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
-            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
             templateText = templateText.Replace("TableName", table.Name);
 
             StringBuilder columnBuilder = new();
@@ -155,7 +154,6 @@ namespace Clean.Generator
         {
             string templateText = ReadTemplateText("Services\\TableNameService.cs");
             templateText = templateText.Replace("ContextName", Context.Name);
-            templateText = templateText.Replace("GeneratedDateTimeStamp", _GenerationTime.ToShortDateString() + " " + _GenerationTime.ToShortTimeString());
             templateText = templateText.Replace("TableName", table.Name);
 
             WriteFile($"{_SaveLocation}\\Services", $"{table.Name}Service.cs", templateText);

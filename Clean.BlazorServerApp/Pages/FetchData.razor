@@ -28,6 +28,7 @@ else
                     <td><input type="datetime" @onchange="(a) => CreatedDateChange(a, exampleDb)" value="@exampleDb.CreatedDate" /></td>
                     <td><input @onchange="(a) => NameChange(a, exampleDb)" value="@exampleDb.Name" /></td>
                     <td><button @onclick="() => Delete(exampleDb)">Delete</button></td>
+                    <td><button @onclick="() => AddSample(exampleDb)">Add Sample</button></td>
                 </tr>
                 @if (exampleDb.Samples != null)
                 {
@@ -36,7 +37,7 @@ else
                         <tr>
                             <td>@exampleDb.CreatedDate</td>
                             <td><input @onchange="(a) => NameChange(a, sampleDb)" value="@sampleDb.Name" /></td>
-                            <td><button @onclick="() => Delete(sampleDb)">Delete</button></td>
+                            <td colspan="2"><button @onclick="() => Delete(sampleDb)">Delete</button></td>
                         </tr>
                     }        
                 }
@@ -60,9 +61,7 @@ else
 
         if (!exampleDbs.Any())
         {
-            Examples newExample = new Examples() { Name = "Example", Samples = new List<Samples>() };
-            newExample.Samples.Add(new() { Name = "Sample 1" });
-            newExample.Samples.Add(new() { Name = "Sample 2" });
+            Examples newExample = new Examples() { Name = "Example" };
             _exampleService.Create(newExample);
         }
     }
@@ -99,6 +98,16 @@ else
     void Delete(Examples example)
     {
         _exampleService.Delete(example);
+    }
+
+    void AddSample(Examples example)
+    {
+        Samples sample = new()
+            {
+                ExampleId = example.Id.Value,
+                Name = "Sample",
+            };
+        _sampleService.Create(sample);
     }
 
     void Delete(Samples sample)
