@@ -8,6 +8,6 @@
 	[State]			VARCHAR(50) NULL,
 	[Country]		VARCHAR(50) NOT NULL,
 	[Zip]			VARCHAR(25) NULL,
-	[CreatedDate]	DATETIME2(7) NOT NULL CONSTRAINT [DF_Locations_CreatedDate] DEFAULT(GETDATE()),
-	[ModifiedDate]	DATETIME2(7) NULL
+	[CreatedDatetime]	DATETIME2(7) NOT NULL CONSTRAINT [DF_Locations_CreatedDate] DEFAULT(GETDATE()),
+	[ModifiedDatetime]	DATETIME2(7) NULL
 )

@@ -11,12 +11,13 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Clean.Domain.ContextNameContext.Models.LookupRequests;
 using Clean.Domain.ContextNameContext.Services;
-using Clean.Domain.ContextNameContext.Entities;
+using Clean.Infrastructure.ContextNameContext.Entities;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Web.Http;
 using Clean.Domain.Common.Models;
+using Clean.Domain.ContextNameContext.Models.DTOs;
 
 namespace Clean.API.Functions.ContextNameContext.TableName.Functions
 {
@@ -50,7 +51,7 @@ namespace Clean.API.Functions.ContextNameContext.TableName.Functions
 
             try 
             { 
-                ResultResponse<Domain.ContextNameContext.Entities.TableName> response = _TableNameService.Delete(primaryKey);
+                ResultResponse<TableNameDTO> response = _TableNameService.Delete(primaryKey);
 
                 string json = JsonConvert.SerializeObject(response);
                 if(response.Successful)

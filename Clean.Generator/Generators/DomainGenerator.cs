@@ -36,7 +36,7 @@ namespace Clean.Generator.Generators
                 _ScopedServices = new();
                 foreach (Table table in context.Tables)
                 {
-                    GenerateEntity(table);
+                    GenerateDTO(table);
                     GenerateLookupRequest(table);
                     GenerateService(table);
                 }
@@ -66,18 +66,17 @@ namespace Clean.Generator.Generators
             FileEditor.WriteFile($"{_SaveLocation}\\Extensions", $"{Context.Name}DomainExtension.cs", templateText);
         }
 
-        private void GenerateEntity(Table table)
+        private void GenerateDTO(Table table)
         {
             if (Context == null)
                 throw new ArgumentNullException(nameof(Context));
 
             string tableName = GeneratorExtensions.GetTableName(_IncludeSchemaLabel, table);
-            string templateText = FileEditor.ReadTemplateText(_TemplateDirectory, "Entities\\TableName.cs");
+            string templateText = FileEditor.ReadTemplateText(_TemplateDirectory, "Models\\DTOs\\TableNameDTO.cs");
             templateText = templateText.Replace("Clean.", _DefaultNamespace);
             templateText = templateText.Replace("ContextName", Context.Name);
-            templateText = templateText.Replace("Table(\"TableName\"", $"Table(\"{table.Name}\"");
             templateText = templateText.Replace("//RefTableName", (_RestrictedNames.Contains(tableName)
-                ? $"using {tableName} = {_DefaultNamespace}Domain.{Context.Name}Context.Entities.{tableName};"
+                ? $"using {tableName} = {_DefaultNamespace}Domain.{Context.Name}Context.Models.DTOs.{tableName};"
                 : ""));
             templateText = templateText.Replace("TableName", tableName);
             templateText = templateText.Replace("TableSchema", table.Schema);
@@ -157,7 +156,7 @@ namespace Clean.Generator.Generators
 
             templateText = templateText.Replace("//ForeignKeys", foreignKeys.ToString());
 
-            FileEditor.WriteFile($"{_SaveLocation}\\Entities", $"{tableName}.cs", templateText);
+            FileEditor.WriteFile($"{_SaveLocation}\\Models\\DTOs", $"{tableName}DTO.cs", templateText);
         }
 
         private void GenerateLookupRequest(Table table)

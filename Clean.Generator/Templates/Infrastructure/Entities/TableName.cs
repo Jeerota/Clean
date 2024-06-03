@@ -4,27 +4,19 @@
 using Clean.Domain.Common.Entities;
 using Clean.Domain.Common.Enums;
 using Clean.Domain.Common.Models;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-//RefTableName
-namespace Clean.Domain.ContextNameContext.Entities
+
+namespace Clean.Infrastructure.ContextNameContext.Entities
 {
     [Table("TableName", Schema = "TableSchema")]
     public class TableName : BaseEntity
     {
-//Columns
-//ForeignKeys
-        public ResultResponse<TableName> Validate(bool isUpdate = false)
-        {
-            ResultResponse<TableName> result = new();
-            result.Errors.Add("");
-//ValidateColumns
-            return result;
-        }
+        //Columns
+        //ForeignKeys
 
         public override bool Equals(object? other)
         {
-            if(other == null) 
+            if (other == null)
                 return false;
 
             return other.GetType() != this.GetType()
@@ -34,7 +26,7 @@ namespace Clean.Domain.ContextNameContext.Entities
         private bool Update(TableName other)
         {
             bool result = false;
-//CompareColumns
+            //CompareColumns
             return result;
         }
     }

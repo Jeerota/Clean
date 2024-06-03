@@ -13,6 +13,7 @@ namespace Clean.Generator.Helpers
                 ForeignKeyAction.SetNull => DeleteBehavior.ClientSetNull,
                 ForeignKeyAction.Cascade => DeleteBehavior.ClientCascade,
                 ForeignKeyAction.SetDefault => DeleteBehavior.Restrict,
+                _ => throw new ArgumentOutOfRangeException(nameof(action)),
             };
         }
 

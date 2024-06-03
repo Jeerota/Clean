@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Clean.Infrastructure.SQL;
+using Clean.Domain.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 

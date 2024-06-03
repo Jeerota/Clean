@@ -10,8 +10,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Clean.Domain.ContextNameContext.Models.LookupRequests;
+using Clean.Domain.ContextNameContext.Models.DTOs;
 using Clean.Domain.ContextNameContext.Services;
-using Clean.Domain.ContextNameContext.Entities;
+using Clean.Infrastructure.ContextNameContext.Entities;
 using System.Collections.Generic;
 using System;
 using System.Linq;
@@ -37,10 +38,10 @@ namespace Clean.API.Functions.ContextNameContext.TableName.Functions
             _logger.LogInformation("Begining TableName create request.");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            Domain.ContextNameContext.Entities.TableName entity;
+            TableNameDTO dto;
             try
             {
-                entity = JsonConvert.DeserializeObject<Domain.ContextNameContext.Entities.TableName>(requestBody);
+                dto = JsonConvert.DeserializeObject<TableNameDTO>(requestBody);
             }
             catch(Exception ex)
             {
@@ -50,7 +51,7 @@ namespace Clean.API.Functions.ContextNameContext.TableName.Functions
 
             try 
             { 
-                ResultResponse<Domain.ContextNameContext.Entities.TableName> response = _TableNameService.Create(entity);
+                ResultResponse<TableNameDTO> response = _TableNameService.Create(dto);
 
                 string json = JsonConvert.SerializeObject(response);
                 if(response.Successful)

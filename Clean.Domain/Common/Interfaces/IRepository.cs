@@ -2,13 +2,13 @@
 
 namespace Clean.Domain.Common.Interfaces
 {
-    public interface IRepository<TEntity> : IReadOnlyRepository<TEntity> where TEntity : class
+    public interface IRepository<TContext> : IReadOnlyRepository<TContext> where TContext : class
     {
-        ResultResponse<TEntity> Create(TEntity entity);
-        Task<ResultResponse<TEntity>> CreateAsync(TEntity entity);
-        ResultResponse<TEntity> Update(TEntity entity);
-        Task<ResultResponse<TEntity>> UpdateAsync(TEntity entity);
-        ResultResponse<TEntity> Delete(object?[]? primaryKey);
-        Task<ResultResponse<TEntity>> DeleteAsync(object?[]? primaryKey);
+        ResultResponse<TDto> Create<TDto, TEntity>(TDto dto) where TDto : class where TEntity : class, new();
+        Task<ResultResponse<TDto>> CreateAsync<TDto, TEntity>(TDto dto) where TDto : class where TEntity : class, new();
+        ResultResponse<TDto> Update<TDto, TEntity>(TDto dto) where TDto : class where TEntity : class, new();
+        Task<ResultResponse<TDto>> UpdateAsync<TDto, TEntity>(TDto dto) where TDto : class where TEntity : class, new();
+        ResultResponse<TDto> Delete<TDto, TEntity>(object?[]? primaryKey) where TDto : class where TEntity : class, new();
+        Task<ResultResponse<TDto>> DeleteAsync<TDto, TEntity>(object?[]? primaryKey) where TDto : class where TEntity : class, new();
     }
 }

@@ -7,8 +7,8 @@
 	[Model]			VARCHAR(100) NULL,
 	[Plate]			VARCHAR(100) NULL,
 	[VIN]			VARCHAR(100) NULL,
-	[CreatedDate]	DATETIME2(7) NOT NULL CONSTRAINT [DF_Vehicles_CreatedDate] DEFAULT(GETDATE()),
-	[ModifiedDate]	DATETIME2(7) NULL,
+	[CreatedDatetime]	DATETIME2(7) NOT NULL CONSTRAINT [DF_Vehicles_CreatedDate] DEFAULT(GETDATE()),
+	[ModifiedDatetime]	DATETIME2(7) NULL,
 	Constraint [FK_Vehicles_Locations_LocationId_Id] FOREIGN KEY ([LocationId]) REFERENCES [dbo].[Locations]([Id])
 		ON DELETE CASCADE
 )

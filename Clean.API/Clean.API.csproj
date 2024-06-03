@@ -10,7 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Clean.Domain\Clean.Domain.csproj" />
-    <ProjectReference Include="..\Clean.Infrastructure\Clean.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

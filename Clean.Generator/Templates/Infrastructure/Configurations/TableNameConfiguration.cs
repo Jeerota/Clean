@@ -1,4 +1,4 @@
-﻿using Clean.Domain.ContextNameContext.Entities;
+﻿using Clean.Infrastructure.ContextNameContext.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 //RefTableName

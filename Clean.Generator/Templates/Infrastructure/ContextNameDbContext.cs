@@ -1,7 +1,7 @@
 ﻿//This file was auto-genearted by the Clean.Generator.//
 //Any modifications to this file will be overwritten on the next run of the generator.//
 
-using Clean.Domain.ContextNameContext.Entities;
+using Clean.Infrastructure.ContextNameContext.Entities;
 using Clean.Infrastructure.ContextNameContext.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

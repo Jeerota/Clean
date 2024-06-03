@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Clean.Domain.ContextNameContext.Models.LookupRequests;
+using Clean.Domain.ContextNameContext.Models.DTOs;
 
 namespace Clean.Blazor.Server.Controllers
 {
@@ -26,10 +27,10 @@ namespace Clean.Blazor.Server.Controllers
             _logger.LogInformation("Begining TableName create request.");
 
             string requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
-            Domain.ContextNameContext.Entities.TableName entity;
+            TableNameDTO dto;
             try
             {
-                entity = JsonConvert.DeserializeObject<Domain.ContextNameContext.Entities.TableName>(requestBody);
+                dto = JsonConvert.DeserializeObject<TableNameDTO>(requestBody);
             }
             catch (Exception ex)
             {
@@ -39,7 +40,7 @@ namespace Clean.Blazor.Server.Controllers
 
             try
             {
-                ResultResponse<Domain.ContextNameContext.Entities.TableName> response = _TableNameService.Create(entity);
+                ResultResponse<TableNameDTO> response = _TableNameService.Create(dto);
 
                 string json = JsonConvert.SerializeObject(response);
                 if (response.Successful)
@@ -79,7 +80,7 @@ namespace Clean.Blazor.Server.Controllers
 
             try
             {
-                ResultResponse<Domain.ContextNameContext.Entities.TableName> response = _TableNameService.Delete(primaryKey);
+                ResultResponse<TableNameDTO> response = _TableNameService.Delete(primaryKey);
 
                 string json = JsonConvert.SerializeObject(response);
                 if (response.Successful)
@@ -126,7 +127,7 @@ namespace Clean.Blazor.Server.Controllers
                 if (lookupRequest == null)
                     lookupRequest = new();
 
-                FetchResponse<Domain.ContextNameContext.Entities.TableName> response = _TableNameService.GetFetchResponse(lookupRequest);
+                FetchResponse<TableNameDTO> response = _TableNameService.GetFetchResponse(lookupRequest);
 
                 if (response.Entities == null)
                 {
@@ -154,10 +155,10 @@ namespace Clean.Blazor.Server.Controllers
             _logger.LogInformation("Begining TableName update request.");
 
             string requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
-            Domain.ContextNameContext.Entities.TableName entity;
+            TableNameDTO dto;
             try
             {
-                entity = JsonConvert.DeserializeObject<Domain.ContextNameContext.Entities.TableName>(requestBody);
+                dto = JsonConvert.DeserializeObject<TableNameDTO>(requestBody);
             }
             catch (Exception ex)
             {
@@ -167,7 +168,7 @@ namespace Clean.Blazor.Server.Controllers
 
             try
             {
-                ResultResponse<Domain.ContextNameContext.Entities.TableName> response = _TableNameService.Update(entity);
+                ResultResponse<TableNameDTO> response = _TableNameService.Update(dto);
 
                 string json = JsonConvert.SerializeObject(response);
                 if (response.Successful)

@@ -11,12 +11,12 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Clean.Domain.ContextNameContext.Models.LookupRequests;
 using Clean.Domain.ContextNameContext.Services;
-using Clean.Domain.ContextNameContext.Entities;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Web.Http;
 using Clean.Domain.Common.Models;
+using Clean.Domain.ContextNameContext.Models.DTOs;
 
 namespace Clean.API.Functions.ContextNameContext.TableName.Functions
 {
@@ -57,7 +57,7 @@ namespace Clean.API.Functions.ContextNameContext.TableName.Functions
                 if (lookupRequest == null)
                     lookupRequest = new();
 
-                FetchResponse<Domain.ContextNameContext.Entities.TableName> response = _TableNameService.GetFetchResponse(lookupRequest);
+                FetchResponse<TableNameDTO> response = _TableNameService.GetFetchResponse(lookupRequest);
 
                 if (response.Entities == null)
                 {

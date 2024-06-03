@@ -1,6 +1,4 @@
-﻿//using Clean.Domain.ExampleContext.Extensions;
-//using Clean.Infrastructure.ExampleContext;
-using Clean.Infrastructure.SQL;
+﻿using Clean.Domain.Common;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 
 [assembly: FunctionsStartup(typeof(MyNamespace.Startup))]
@@ -12,8 +10,6 @@ namespace MyNamespace
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.SQLInfrastructure();
-            //builder.Services.ExampleInfrastructure();
-            //builder.Services.ExampleDomain();
         }
     }
 }

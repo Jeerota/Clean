@@ -3,80 +3,64 @@
 
 using Clean.Domain.Common.Interfaces;
 using Clean.Domain.Common.Models;
-using Clean.Domain.ContextNameContext.Entities;
+using Clean.Domain.ContextNameContext.Models.DTOs;
 using Clean.Domain.ContextNameContext.Models.LookupRequests;
+using Clean.Infrastructure.ContextNameContext;
+using Clean.Infrastructure.ContextNameContext.Entities;
 
 namespace Clean.Domain.ContextNameContext.Services
 {
     public interface ITableNameService
     {
-        ResultResponse<TableName> Create(TableName entity);
-        IQueryable<TableName> GetQueryable(TableNameLookupRequest lookupRequest);
-        IEnumerable<TableName> GetEnumerable(TableNameLookupRequest lookupRequest);
-        FetchResponse<TableName> GetFetchResponse(TableNameLookupRequest lookupRequest);
-        ResultResponse<TableName> Update(TableName entity);
-        ResultResponse<TableName> Delete(object?[]? primaryKey);
+        ResultResponse<TableNameDTO> Create(TableNameDTO dto);
+        IEnumerable<TableNameDTO> GetEnumerable(TableNameLookupRequest lookupRequest);
+        FetchResponse<TableNameDTO> GetFetchResponse(TableNameLookupRequest lookupRequest);
+        ResultResponse<TableNameDTO> Update(TableNameDTO dto);
+        ResultResponse<TableNameDTO> Delete(object?[]? primaryKey);
     }
 
     public class TableNameService : ITableNameService
     {
-        private readonly IRepository<TableName> _TableNameRepository;
+        private readonly IRepository<ContextNameDbContext> _TableNameRepository;
 
-        public TableNameService(IRepository<TableName> TableNameRepository)
+        public TableNameService(IRepository<ContextNameDbContext> TableNameRepository)
         {
             _TableNameRepository = TableNameRepository;
         }
 
-        public ResultResponse<TableName> Create(TableName entity)
+        public ResultResponse<TableNameDTO> Create(TableNameDTO dto)
         {
-            if (entity == null)
-                return new ResultResponse<TableName>() { Errors = new() { "TableName cannot be null." } };
+            if (dto == null)
+                return new ResultResponse<TableNameDTO>() { Errors = new() { "TableName cannot be null." } };
 
-            ResultResponse<TableName> result = entity.Validate();
+            ResultResponse<TableNameDTO> result = dto.Validate();
 
             if (result.Successful)
-                result = _TableNameRepository.Create(entity);
+                result = _TableNameRepository.Create<TableNameDTO, TableName>(dto);
 
             return result;
         }
 
-        public IQueryable<TableName> GetQueryable(TableNameLookupRequest lookupRequest)
-        {
-            var predicate = lookupRequest.BuildPredicate<TableName>();
-            var orderBy = lookupRequest.GetOrderBy<TableName>();
-            return _TableNameRepository.GetQueryable(predicate, orderBy);
-        }
+        public IEnumerable<TableNameDTO> GetEnumerable(TableNameLookupRequest lookupRequest) => 
+            _TableNameRepository.GetEnumerable<TableNameDTO, TableName>(lookupRequest.BuildPredicate<TableName>(), lookupRequest.Page, lookupRequest.PageLimit, lookupRequest.GetOrderBy<TableName>());
 
-        public IEnumerable<TableName> GetEnumerable(TableNameLookupRequest lookupRequest)
-        {
-            var predicate = lookupRequest.BuildPredicate<TableName>();
-            var orderBy = lookupRequest.GetOrderBy<TableName>();
-            return _TableNameRepository.GetEnumerable(predicate, lookupRequest.Page, lookupRequest.PageLimit, orderBy);
-        }
+        public FetchResponse<TableNameDTO> GetFetchResponse(TableNameLookupRequest lookupRequest) => 
+            _TableNameRepository.GetFetchResponse<TableNameDTO, TableName>(lookupRequest.BuildPredicate<TableName>(), lookupRequest.Page, lookupRequest.PageLimit, lookupRequest.GetOrderBy<TableName>());
 
-        public FetchResponse<TableName> GetFetchResponse(TableNameLookupRequest lookupRequest)
+        public ResultResponse<TableNameDTO> Update(TableNameDTO dto)
         {
-            var predicate = lookupRequest.BuildPredicate<TableName>();
-            var orderBy = lookupRequest.GetOrderBy<TableName>();
-            return _TableNameRepository.GetFetchResponse(predicate, lookupRequest.Page, lookupRequest.PageLimit, orderBy);
-        }
+            if (dto == null)
+                return new ResultResponse<TableNameDTO>() { Errors = new() { "TableName cannot be null." } };
 
-        public ResultResponse<TableName> Update(TableName entity)
-        {
-            if (entity == null)
-                return new ResultResponse<TableName>() { Errors = new() { "TableName cannot be null." } };
-
-            ResultResponse<TableName> result = entity.Validate(true);
+            ResultResponse<TableNameDTO> result = dto.Validate(true);
 
             if (result.Successful)
-                result = _TableNameRepository.Update(entity);
+                result = _TableNameRepository.Update<TableNameDTO, TableName>(dto);
 
             return result;
         }
 
-        public ResultResponse<TableName> Delete(object?[]? primaryKey)
-        {
-            return _TableNameRepository.Delete(primaryKey);
-        }
+        public ResultResponse<TableNameDTO> Delete(object?[]? primaryKey) => 
+            _TableNameRepository.Delete<TableNameDTO, TableName>(primaryKey);
     }
 }
