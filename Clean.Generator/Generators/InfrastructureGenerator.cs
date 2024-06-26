@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System.Text;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Clean.Infrastructure.ContextNameContext.Entities;
 
 namespace Clean.Generator.Generators
 {
@@ -21,7 +22,7 @@ namespace Clean.Generator.Generators
         private Context Context;
         private string _SaveLocation;
 
-        public InfrastructureGenerator(IConfiguration config, Context context)
+        public InfrastructureGenerator(ref StringBuilder autoMapperConfig, IConfiguration config, Context context)
         {
             _IncludeSchemaLabel = bool.TryParse(config["Values:IncludeSchemaLabel"], out bool includeSchemaLabel) ? includeSchemaLabel : false;
             _DefaultNamespace = config["Values:DefaultNamespace"];
@@ -40,7 +41,7 @@ namespace Clean.Generator.Generators
                     GenerateTableConfiguration(table);
                 }
 
-                GenerateAutoMapperConfiguration();
+                GenerateAutoMapperConfiguration(ref autoMapperConfig);
                 GenerateDbContext();
             }
         }
@@ -149,6 +150,8 @@ namespace Clean.Generator.Generators
                 : ""));
             templateText = templateText.Replace("TableName", tableName);
 
+            templateText = templateText.Replace("//ToTable", $"\t\t\tbuilder.ToTable(\"{tableName}\", {table.Schema});");
+
             StringBuilder keylessTables = new();
             StringBuilder tableKeys = new();
             StringBuilder foreignKeys = new();
@@ -226,92 +229,13 @@ namespace Clean.Generator.Generators
             FileEditor.WriteFile($"{_SaveLocation}\\Configurations", $"{tableName}Configuration.cs", templateText);
         }
 
-        private void GenerateAutoMapperConfiguration()
+        private void GenerateAutoMapperConfiguration(ref StringBuilder autoMapperConfig)
         {
-            //string templateText = FileEditor.ReadTemplateText(_TemplateDirectory, "\\Configurations\\AutoMapperConfigurationHelper.cs");
-            //string tableName = GeneratorExtensions.GetTableName(_IncludeSchemaLabel, table);
-            //templateText = templateText.Replace("Clean.", _DefaultNamespace);
-            //templateText = templateText.Replace("ContextName", Context.Name);
-            //templateText = templateText.Replace("//RefTableName", (_RestrictedNames.Contains(tableName)
-            //    ? $"using {tableName} = {_DefaultNamespace}Domain.{Context.Name}Context.Entities.{tableName};"
-            //    : ""));
-            //templateText = templateText.Replace("TableName", tableName);
-
-            //StringBuilder keylessTables = new();
-            //StringBuilder tableKeys = new();
-            //StringBuilder foreignKeys = new();
-            //StringBuilder columns = new();
-            //if (table.IsKeyless)
-            //    keylessTables.AppendLine($"\t\t\tbuilder.HasNoKey();");
-            //else
-            //{
-            //    List<string> keys = table.Columns.Where(column => column.IsPrimaryKey).Select(column => GeneratorExtensions.GetPropertyNameFromColumnName(table, column.Name)).ToList();
-            //    StringBuilder keyString = new();
-            //    keyString.Append($"col.{keys[0]}");
-            //    foreach (string key in keys.Skip(1))
-            //        keyString.Append($", col.{key}");
-
-            //    tableKeys.AppendLine($"\t\t\tbuilder.HasKey(col => new {{ {keyString.ToString()} }});");
-            //}
-
-            //foreach (Models.Column column in table.Columns)
-            //{
-            //    string columnName = GeneratorExtensions.GetPropertyNameFromColumnName(table, column.Name);
-            //    columns.AppendLine($"\t\t\tbuilder" +
-            //        $".Property(c => c.{columnName})" +
-            //        (column.Name != columnName ? $".HasColumnName(\"{column.Name}\")" : "") +
-            //        (column.IsNullable ? "" : ".IsRequired()") +
-            //        (column.Length.HasValue ? $".HasMaxLength({column.Length})" : "") +
-            //        (column.Precision.HasValue ? $".HasPrecision({column.Precision}, {column.Scale ?? 0})" : "") +
-            //        (column.IsIdentity ? $".UseIdentityColumn({column.IdentitySeed ?? 1}, {column.IdentityIncrement ?? 1})" : "") +
-            //        (!string.IsNullOrEmpty(column.DefualtValue) ? $".HasDefaultValue({SQLConvertorHelper.ConvertDefaultToDataType(column.DataType, column.DefualtValue)})" : "") +
-            //        ";");
-            //}
-
-
-            ////ToDo: Remove hardcoded Many:1 Relationship definitions and check for proper types.
-            //foreach (Models.ForeignKey foreignKey in table.ForeignKeys)
-            //{
-            //    List<string> foreignColumns = foreignKey.ForeignColumns.Select(column => GeneratorExtensions.GetPropertyNameFromColumnName(table, column)).ToList();
-            //    StringBuilder principalkeyString = new();
-            //    principalkeyString.Append($"d.{foreignColumns[0]}");
-            //    foreach (string key in foreignColumns.Skip(1))
-            //        principalkeyString.Append($", d.{key}");
-
-            //    List<string> principalColumns = foreignKey.DefiningColumns.Select(column => GeneratorExtensions.GetPropertyNameFromColumnName(table, column)).ToList();
-            //    StringBuilder foreignkeyString = new();
-            //    foreignkeyString.Append($"p.{principalColumns[0]}");
-            //    foreach (string key in principalColumns.Skip(1))
-            //        foreignkeyString.Append($", p.{key}");
-
-            //    string foreignTableName = GeneratorExtensions.GetTableName(_IncludeSchemaLabel, foreignKey);
-            //    foreignKeys.AppendLine($"\t\t\tbuilder"
-            //        + $".HasOne(d => d.{(tableName == foreignTableName ? "Parent" : "") + foreignTableName})"
-            //    + ".WithMany("
-            //        + (table.IsKeyless ? "" : $"p => p.{(tableName == foreignTableName ? "Related" : "") + tableName}") + ")"
-            //        + $".HasForeignKey(p => "
-            //        + (foreignColumns.Count == 1
-            //                ? foreignkeyString
-            //                : $"new {{ {foreignkeyString} }}")
-            //        + ")"
-            //        + (table.IsKeyless
-            //            ? ""
-            //            : $".HasPrincipalKey(d => " + (principalColumns.Count == 1
-            //                ? principalkeyString
-            //                : $"new {{ {principalkeyString} }}")
-            //        + ")")
-            //        + (foreignKey.Delete != ForeignKeyAction.NoAction
-            //            ? $".OnDelete({SQLConvertorHelper.GetDeleteBehavior(foreignKey.Delete)})"
-            //            : "")
-            //        + ";"
-            //        );
-            //}
-            //templateText = templateText.Replace("//TableKeys", tableKeys.ToString());
-            //templateText = templateText.Replace("//ForeignKeys", foreignKeys.ToString());
-            //templateText = templateText.Replace("//KeylessTables", keylessTables.ToString());
-            //templateText = templateText.Replace("//Columns", columns.ToString());
-
-            //FileEditor.WriteFile($"{_SaveLocation}\\Configurations", $"{tableName}Configuration.cs", templateText);
+            foreach(Models.Table table in Context.Tables)
+            {            
+                string tableName = GeneratorExtensions.GetTableName(_IncludeSchemaLabel, table);
+                autoMapperConfig.AppendLine($"\t\t\tcfg.CreateMap<{tableName}, {tableName}DTO>().ReverseMap();");
+            }
         }
 
         private void GenerateDbContext()

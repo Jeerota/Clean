@@ -129,7 +129,7 @@ namespace Clean.Blazor.Server.Controllers
 
                 FetchResponse<TableNameDTO> response = _TableNameService.GetFetchResponse(lookupRequest);
 
-                if (response.Entities == null)
+                if (response.Records == null)
                 {
                     _logger.LogInformation($"No TableName found for parameters: {requestBody}");
                     return new NotFoundResult();

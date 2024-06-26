@@ -8,7 +8,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Clean.Infrastructure.ContextNameContext.Entities
 {
-    [Table("TableName", Schema = "TableSchema")]
     public class TableName : BaseEntity
     {
         //Columns

@@ -175,6 +175,9 @@ namespace Clean.Domain.SQL
                 string stringValue = primaryKey[i]?.ToString();
                 switch (primaryKeyTypes[i])
                 {
+                    case "Int32":
+                        typedPrimaryKey.Add(int.TryParse(stringValue, out int intResult) ? intResult : 0);
+                        break;
                     case "Int64":
                         typedPrimaryKey.Add(long.TryParse(stringValue, out long longResult) ? longResult : 0);
                         break;
@@ -189,7 +192,6 @@ namespace Clean.Domain.SQL
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(primaryKeyTypes[i]);
-
                 }
             }
 
@@ -422,7 +424,7 @@ namespace Clean.Domain.SQL
             response.PageLimit = pageLimit;
 
             IEnumerable<TEntity> entities = query.Skip(skipCount).Take(pageLimit);
-            response.Entities = entities.Select(entity => _mapper.Map<TDto>(entity));
+            response.Records = entities.Select(entity => _mapper.Map<TDto>(entity));
 
             return response;
         }

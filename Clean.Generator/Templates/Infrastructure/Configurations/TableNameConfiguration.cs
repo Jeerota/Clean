@@ -8,6 +8,7 @@ namespace Clean.Infrastructure.ContextNameContext.Configurations
     {
         public void Configure(EntityTypeBuilder<TableName> builder)
         {
+//ToTable
 //KeylessTables
 //TableKeys
 //Columns

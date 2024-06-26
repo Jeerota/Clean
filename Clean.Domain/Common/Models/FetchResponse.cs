@@ -7,7 +7,7 @@
         {
             get
             {
-                return Entities?.Count() ?? 0;
+                return Records?.Count() ?? 0;
             }
         }
 
@@ -21,7 +21,7 @@
             }
         }
 
-        public IEnumerable<T>? Entities { get; set; }
+        public IEnumerable<T>? Records { get; set; }
 
         public FetchResponse() { }
     }
